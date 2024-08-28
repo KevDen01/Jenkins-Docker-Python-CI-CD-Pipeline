@@ -12,7 +12,7 @@ pipeline {
         stage("Build") {
             steps {
                 echo "Building the Docker image"
-                sh "sudo docker build -t pipeline ."
+                sh "docker build -t pipeline ."
             }
         }
 
@@ -20,9 +20,9 @@ pipeline {
             steps {
                 echo "Pushing image to Docker Hub"
                 withCredentials([usernamePassword(credentialsId: "dockerHub", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]) {
-                    sh "sudo docker tag pipeline ${env.dockerHubUser}/pipeline:latest"
-                    sh "sudo docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                    sh "sudo docker push ${env.dockerHubUser}/pipeline:latest"
+                    sh "docker tag pipeline ${env.dockerHubUser}/pipeline:latest"
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                    sh "docker push ${env.dockerHubUser}/pipeline:latest"
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
         stage ("Deploy") {
             steps {
                 echo "Deploying the container"
-                sh "sudo docker compose down && docker compose up -d"
+                sh "docker compose down && docker compose up -d"
             }
         }
     }
